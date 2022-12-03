@@ -64,7 +64,7 @@ export class ProductController {
 
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('prodImg'))
-  @Put('id')
+  @Put('/:id')
   async updatedProduct(
     @Param('id', new ParseIntPipe()) id: number,
     @Body(new ValidationPipe({ transform: true, whitelist: true }))

@@ -82,7 +82,6 @@ export class ProductService {
 
       await writeFile(`src/images/${image}`, prodImg.buffer);
     }
-    console.log(product);
 
     return await this.productRepository.save(product);
   }

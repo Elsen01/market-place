@@ -7,7 +7,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
-import { unlink } from 'fs/promises';
+import { v4 as uuid4 } from 'uuid';
+import { unlink, writeFile } from 'fs/promises';
+import { UpdateUserDto } from './dto/user.request.dto';
 
 @Injectable()
 export class UserService {
@@ -33,7 +35,7 @@ export class UserService {
     throw new BadRequestException(`User Not Found`);
 
     try {
-      await unlink(`src/images${user.userImg}`);
+      await unlink(`src/images/${user.userImg}`);
     } catch (err) {
       console.log(err);
     }
@@ -53,5 +55,31 @@ export class UserService {
 
   findByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } });
+  }
+
+  async updateUser(id, dto: UpdateUserDto, userImg: Express.Multer.File) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException(`User Not Found`, HttpStatus.NOT_FOUND);
+    }
+
+    user.firstName = dto.firstName;
+    user.lastName = dto.lastName;
+    user.username = dto.username;
+    user.email = dto.email;
+    user.age = dto.age;
+    user.userImg = dto.userImg;
+
+    if (userImg) {
+      const image = uuid4() + userImg.originalname;
+      try {
+        await unlink(`src/images/${user.userImg}`);
+      } catch (err) {
+        console.log(err);
+      }
+      user.userImg = image;
+      await writeFile(`src/images/${image}`, userImg.buffer);
+    }
+    return await this.userRepository.save(user);
   }
 }
