@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
@@ -25,9 +25,6 @@ export class CreateUserDto {
 
   @ApiProperty()
   age: number;
-
-  @ApiPropertyOptional({ format: 'binary', type: 'string' })
-  readonly userImg: string;
 }
 
 export class UpdateUserDto {
@@ -50,7 +47,4 @@ export class UpdateUserDto {
 
   @ApiProperty()
   age: number;
-
-  @ApiPropertyOptional({ format: 'binary', type: 'string' })
-  readonly userImg: string;
 }

@@ -45,7 +45,7 @@ export class ProductService {
     ]);
     return newProd;
   }
-  async deleteProduct(id): Promise<void> {
+  async deleteProduct(id: number): Promise<void> {
     const product = await this.productRepository.findOne({ where: { id } });
     if (!product) {
       throw new HttpException(`Product Not Found`, HttpStatus.NOT_FOUND);

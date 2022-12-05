@@ -25,8 +25,4 @@ export class ResponseUserDto {
 
   @ApiProperty()
   age: number;
-
-  @ApiPropertyOptional({ format: 'binary', type: 'string' })
-  @IsOptional()
-  readonly userImg: string;
 }

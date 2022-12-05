@@ -24,7 +24,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.userService.findByEmail(username);
+    const user = await this.findByEmail(username);
     console.log(user);
     if (user) {
       const isMatch = await bcrypt.compare(pass, user.password);
@@ -40,14 +40,12 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.id };
-    console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
-  async register(dto: CreateUserDto, userImg: Express.Multer.File) {
-    const userImgUrl = uuid4() + userImg.originalname;
+  async register(dto: CreateUserDto) {
     const userDb = await this.findByEmail(dto.email);
     if (userDb) {
       throw new HttpException(
@@ -62,13 +60,11 @@ export class AuthService {
     user.age = dto.age;
     user.username = dto.username;
     user.password = await bcrypt.hash(dto.password, 10);
-    user.userImg = userImgUrl;
 
-    const [newUser] = await Promise.all([
-      this.userRepository.save(user),
-      writeFile(`src/images/${userImgUrl}`, userImg.buffer),
-    ]);
-    return newUser;
+    const newUser = await this.userRepository.save(user);
+
+    const { password, ...userResponse } = newUser;
+    return userResponse;
   }
   findByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } });

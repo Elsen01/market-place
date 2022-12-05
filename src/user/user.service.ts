@@ -33,12 +33,6 @@ export class UserService {
       return;
     }
     throw new BadRequestException(`User Not Found`);
-
-    try {
-      await unlink(`src/images/${user.userImg}`);
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   async getAllUser() {
@@ -57,7 +51,7 @@ export class UserService {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async updateUser(id, dto: UpdateUserDto, userImg: Express.Multer.File) {
+  async updateUser(id, dto: UpdateUserDto) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new HttpException(`User Not Found`, HttpStatus.NOT_FOUND);
@@ -68,18 +62,6 @@ export class UserService {
     user.username = dto.username;
     user.email = dto.email;
     user.age = dto.age;
-    user.userImg = dto.userImg;
-
-    if (userImg) {
-      const image = uuid4() + userImg.originalname;
-      try {
-        await unlink(`src/images/${user.userImg}`);
-      } catch (err) {
-        console.log(err);
-      }
-      user.userImg = image;
-      await writeFile(`src/images/${image}`, userImg.buffer);
-    }
     return await this.userRepository.save(user);
   }
 }

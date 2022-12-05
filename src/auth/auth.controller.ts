@@ -24,27 +24,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/:register')
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('userImg'))
   @ApiOkResponse({ type: ResponseUserDto })
-  async register(
-    @Body(new ValidationPipe({ transform: true })) dto: CreateUserDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: new RegExp(`\.(gif|jpe?g|tiff?|png|webp|bmp)$`),
-        })
-        .addMaxSizeValidator({
-          maxSize: 1000000000,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    userImg: Express.Multer.File,
-  ) {
-    const user = await this.authService.register(dto, userImg);
-    return user;
+  async register(@Body() dto: CreateUserDto) {
+    return await this.authService.register(dto);
   }
 
   @UseGuards(LocalAuthGuard)

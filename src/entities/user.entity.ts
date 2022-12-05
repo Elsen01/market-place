@@ -31,8 +31,4 @@ export class User {
   @Column()
   @IsNotEmpty()
   password: string;
-
-  @Column()
-  @IsString()
-  userImg: string;
 }

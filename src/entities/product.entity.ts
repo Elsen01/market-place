@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IsDate, IsInt, IsString } from 'class-validator';
 import { Order } from './order.entity';
 
@@ -24,5 +30,6 @@ export class ProductEntity {
   prodImg: string;
 
   @ManyToMany(() => Order, (order) => order.products)
+  @JoinTable()
   orders: Order[];
 }

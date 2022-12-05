@@ -36,27 +36,12 @@ export class UserController {
     return await this.userService.getByUserId(id);
   }
 
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('userImg'))
   @Put('/:id')
   async updatedUser(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    @Body()
     dto: UpdateUserDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: new RegExp(`\.(gif|jpe?g|tiff?|png|webp|bmp)$`),
-        })
-        .addMaxSizeValidator({
-          maxSize: 1000000000,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    userImg: Express.Multer.File,
   ) {
-    return await this.userService.updateUser(id, dto, userImg);
+    return await this.userService.updateUser(id, dto);
   }
 }
