@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsDate, IsInt, IsString } from 'class-validator';
-import { Order } from './order.entity';
+import { ProductOrder } from './product-order.entity';
 
 @Entity('product')
 export class ProductEntity {
@@ -29,7 +29,7 @@ export class ProductEntity {
   @IsString()
   prodImg: string;
 
-  @ManyToMany(() => Order, (order) => order.products)
+  @ManyToMany(() => ProductOrder, (prodOrder) => prodOrder.products)
   @JoinTable()
-  orders: Order[];
+  productOrder: ProductOrder[];
 }

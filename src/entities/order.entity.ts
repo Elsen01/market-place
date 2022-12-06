@@ -1,13 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { ProductEntity } from './product.entity';
-import { Basket } from './basket.entity';
-import { IsDate, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IsDate, IsInt } from 'class-validator';
+import { ProductOrder } from './product-order.entity';
 
 @Entity('order')
 export class Order {
@@ -26,9 +19,6 @@ export class Order {
   @IsInt()
   price: number;
 
-  @ManyToMany(() => ProductEntity, (product) => product.orders)
-  products: ProductEntity;
-
-  @ManyToMany(() => Basket, (basket) => basket.orders)
-  baskets: Basket[];
+  @ManyToMany(() => ProductOrder, (prodOrder) => prodOrder.orders)
+  proOrder: ProductOrder;
 }
