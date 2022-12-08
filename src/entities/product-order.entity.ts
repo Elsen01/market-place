@@ -1,16 +1,26 @@
-import { Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { Order } from './order.entity';
 
 @Entity('product-order')
 export class ProductOrder {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ name: 'productId' })
+  productId: number;
 
-  @ManyToMany(() => ProductEntity, (product) => product.productOrder)
-  products: ProductEntity;
+  @PrimaryColumn({ name: 'orderId' })
+  orderId: number;
 
-  @ManyToMany(() => Order, (order) => order.proOrder)
-  @JoinTable()
+  @ManyToOne(() => ProductEntity, (product) => product.orders, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn([{ name: 'productId', referencedColumnName: 'id' }])
+  products: ProductEntity[];
+
+  @ManyToOne(() => Order, (order) => order.products, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn([{ name: 'orderId', referencedColumnName: 'id' }])
   orders: Order[];
 }

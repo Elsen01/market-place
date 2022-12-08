@@ -4,9 +4,9 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateProductOrder {
   @ApiProperty()
   @IsNotEmpty()
-  orderId: number;
+  productId: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  productId: number;
+  orderId: number;
 }

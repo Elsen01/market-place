@@ -1,21 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductOrder } from '../entities/product-order.entity';
-import { Repository } from 'typeorm';
-import { Order } from '../entities/order.entity';
 import { ProductEntity } from '../entities/product.entity';
-import { CreateOrderDto } from '../order/dto/order.request.dto';
+import { Repository } from 'typeorm';
+import { ProductOrder } from '../entities/product-order.entity';
+import { Order } from '../entities/order.entity';
+import { NotFoundException } from '@nestjs/common';
 import { CreateProductOrder } from './dto/product-order.request.dto';
 
-@Injectable()
 export class ProductOrderService {
   constructor(
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
     @InjectRepository(ProductOrder)
     private readonly productOrderRepository: Repository<ProductOrder>,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
   async createProductOrder(dto: CreateProductOrder) {
@@ -23,21 +21,23 @@ export class ProductOrderService {
       where: { id: dto.productId },
     });
     if (!product) {
-      throw new HttpException(`Product Not Found`, HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`PRODUCT NOT FOUND`);
     }
     const order = await this.orderRepository.findOne({
       where: { id: dto.orderId },
     });
     if (!order) {
-      throw new HttpException(`Order Not Found`, HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`Order Not Found`);
     }
+
     const newProductOrder = new ProductOrder();
+    newProductOrder.products = [product];
     newProductOrder.orders = [order];
-    newProductOrder.products = product;
 
     const saveProductOrder = await this.productOrderRepository.save(
       newProductOrder,
     );
+    console.log(saveProductOrder);
     return saveProductOrder;
   }
 }

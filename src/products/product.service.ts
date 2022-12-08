@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from '../entities/product.entity';
@@ -10,12 +11,15 @@ import { Repository } from 'typeorm';
 import { CreateProductDto, UpdateProductDto } from './dto/product.request.dto';
 import { v4 as uuid4 } from 'uuid';
 import { unlink, writeFile } from 'fs/promises';
+import { ProductOrder } from '../entities/product-order.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(ProductOrder)
+    private readonly productOrderService: Repository<ProductOrder>,
   ) {}
 
   async getProductAll() {

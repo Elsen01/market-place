@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsDate, IsInt } from 'class-validator';
-import { ProductOrder } from './product-order.entity';
+import { ProductEntity } from './product.entity';
 
 @Entity('order')
 export class Order {
@@ -19,6 +19,9 @@ export class Order {
   @IsInt()
   price: number;
 
-  @ManyToMany(() => ProductOrder, (prodOrder) => prodOrder.orders)
-  proOrder: ProductOrder;
+  @ManyToMany(() => ProductEntity, (product) => product.orders, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  products?: ProductEntity[];
 }
